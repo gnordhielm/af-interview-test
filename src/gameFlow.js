@@ -118,14 +118,6 @@ const getCommonValue = (values = []) => {
   return check;
 };
 
-const getCommonUpDiagValue = ({ board }) =>
-  getCommonValue(
-    board
-      .slice()
-      .reverse()
-      .reduce((all, row, index) => [...all, row[index]], [])
-  );
-
 export const getGameWinner = gameState => {
   let winner;
 
@@ -139,6 +131,8 @@ export const getGameWinner = gameState => {
   let nextColumnToCheck = gameState.board[0].length - 1;
   while (nextColumnToCheck >= 0) {
     winner = getCommonValue(
+      // eslint is concerned about scoping issues that don't show up here
+      // eslint-disable-next-line no-loop-func
       gameState.board.reduce((all, row) => [...all, row[nextColumnToCheck]], [])
     );
     if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
@@ -157,11 +151,6 @@ export const getGameWinner = gameState => {
       .reduce((all, row, index) => [...all, row[index]], [])
   );
   if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
-
-  // winner = getCommonUpDiagValue({ board: gameState.board });
-  if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
-  // winner = getCommonUpDiagValue({ board: gameState.board });
-  // if (winner !== EMPTY_CELL_VALUE) return winner;
 };
 
 export const getIsGameFull = gameState => {
