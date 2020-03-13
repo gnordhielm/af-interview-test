@@ -1,0 +1,15 @@
+.App {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.App > .__board {
+  flex: 1;
+}
+
+.App > .__controls {
+  padding: 32px 0;
+}
