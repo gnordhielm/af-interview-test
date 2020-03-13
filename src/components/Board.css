@@ -6,16 +6,19 @@
 }
 
 .Board > .__row > .__cell {
-  height: 50px;
-  width: 50px;
-  border: 2px solid black;
-  margin: 2px;
-
+  height: 74px;
+  width: 74px;
+  color: white;
+  background: #cb4e4e;
+  border-radius: 5px;
+  margin: 6px;
+  cursor: default;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: "Comic Sans MS", cursive, sans-serif;
-  font-size: 1.4rem;
+  font-size: 2.4rem;
+  font-weight: 700;
 }
 
 .Board > .__row > .__cell.--empty {
@@ -23,5 +26,5 @@
 }
 
 .Board > .__row > .__cell.--empty:hover {
-  border-color: darkorange;
+  background: #ab3c3c;
 }

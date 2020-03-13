@@ -6,10 +6,22 @@
   align-items: center;
 }
 
+.App > .__instructions {
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
 .App > .__board {
+  padding: 32px 0;
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .App > .__controls {
-  padding: 32px 0;
+  margin-bottom: 32px;
 }

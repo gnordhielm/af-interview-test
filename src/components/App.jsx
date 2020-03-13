@@ -4,9 +4,12 @@ import {
   makeEmptyState,
   processMove,
   getNextPlayerValue,
-  getCellDisplayValue,
+  getPlayerDisplayValue,
   getLastMovePlayer,
-  undoMove
+  undoMove,
+  getGameWinner,
+  getIsGameFull,
+  EMPTY_CELL_VALUE
 } from "../gameFlow";
 import Board from "./Board";
 
@@ -22,6 +25,8 @@ const App = () => {
   };
 
   const nextPlayerValue = getNextPlayerValue(gameState);
+  const isGameFull = getIsGameFull(gameState);
+  const gameWinner = getGameWinner(gameState);
 
   const handleCellClick = ({ rowIndex, cellIndex }) => {
     setGameState(last => {
@@ -33,15 +38,18 @@ const App = () => {
           playerValue: nextPlayerValue
         });
       } catch (error) {
-        console.error("illegal move", error);
         return last;
       }
     });
   };
 
   const instructionsMessage = React.useMemo(() => {
-    return <>{getCellDisplayValue(nextPlayerValue)} goes next.</>;
-  }, [gameState]);
+    if (gameWinner !== undefined && gameWinner !== EMPTY_CELL_VALUE)
+      return <>{getPlayerDisplayValue(gameWinner)} wins!</>;
+    if (isGameFull) return <>Tie!</>;
+
+    return <>{getPlayerDisplayValue(nextPlayerValue)} goes next.</>;
+  }, [nextPlayerValue, isGameFull, gameWinner]);
 
   return (
     <div className="App">
@@ -53,7 +61,7 @@ const App = () => {
       <div className="__controls">
         <button onClick={handleUndo} disabled={!gameState.moves.length}>
           Undo move by{" "}
-          {getCellDisplayValue(getLastMovePlayer(gameState)) || "-"}
+          {getPlayerDisplayValue(getLastMovePlayer(gameState)) || "-"}
         </button>
         <button onClick={handleResetGame}>New game</button>
       </div>

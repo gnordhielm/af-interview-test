@@ -12,14 +12,14 @@ moves
 
 board
 [
-  [0/1/null, 0/1/null, 0/1/null]
-  [0/1/null, 0/1/null, 0/1/null]
-  [0/1/null, 0/1/null, 0/1/null]
+  [Number, Number, Number]
+  [Number, Number, Number]
+  [Number, Number, Number]
 ]
 
 */
 
-export const EMPTY_CELL_VALUE = null;
+export const EMPTY_CELL_VALUE = -1;
 export const PLAYER_ONE_CELL_VALUE = 0;
 export const PLAYER_TWO_CELL_VALUE = 1;
 
@@ -51,10 +51,14 @@ export const processMove = ({
   cellIndex,
   playerValue
 }) => {
-  const nextState = cloneDeep(lastGameState);
-
   if (lastGameState.board[rowIndex][cellIndex] !== EMPTY_CELL_VALUE)
     throw new Error("cell is occupied");
+
+  const winner = getGameWinner(lastGameState);
+  if (winner !== undefined && winner !== EMPTY_CELL_VALUE)
+    throw new Error("game already won");
+
+  const nextState = cloneDeep(lastGameState);
 
   nextState.board[rowIndex][cellIndex] = playerValue;
   nextState.moves.push({
@@ -96,7 +100,7 @@ export const getLastMovePlayer = gameState => {
 
 export const getIsCellEmpty = cellValue => cellValue === EMPTY_CELL_VALUE;
 
-export const getCellDisplayValue = cellValue => {
+export const getPlayerDisplayValue = cellValue => {
   switch (cellValue) {
     case PLAYER_ONE_CELL_VALUE:
       return "X";
@@ -105,4 +109,64 @@ export const getCellDisplayValue = cellValue => {
     default:
       return "";
   }
+};
+
+const getCommonValue = (values = []) => {
+  const check = values[0];
+  for (const value of values) if (value !== check) return;
+
+  return check;
+};
+
+const getCommonUpDiagValue = ({ board }) =>
+  getCommonValue(
+    board
+      .slice()
+      .reverse()
+      .reduce((all, row, index) => [...all, row[index]], [])
+  );
+
+export const getGameWinner = gameState => {
+  let winner;
+
+  let nextRowToCheck = gameState.board.length - 1;
+  while (nextRowToCheck >= 0) {
+    winner = getCommonValue(gameState.board[nextRowToCheck]);
+    if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
+    nextRowToCheck--;
+  }
+
+  let nextColumnToCheck = gameState.board[0].length - 1;
+  while (nextColumnToCheck >= 0) {
+    winner = getCommonValue(
+      gameState.board.reduce((all, row) => [...all, row[nextColumnToCheck]], [])
+    );
+    if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
+    nextColumnToCheck--;
+  }
+
+  winner = getCommonValue(
+    gameState.board.reduce((all, row, index) => [...all, row[index]], [])
+  );
+  if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
+
+  winner = getCommonValue(
+    gameState.board
+      .slice()
+      .reverse()
+      .reduce((all, row, index) => [...all, row[index]], [])
+  );
+  if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
+
+  // winner = getCommonUpDiagValue({ board: gameState.board });
+  if (winner !== undefined && winner !== EMPTY_CELL_VALUE) return winner;
+  // winner = getCommonUpDiagValue({ board: gameState.board });
+  // if (winner !== EMPTY_CELL_VALUE) return winner;
+};
+
+export const getIsGameFull = gameState => {
+  for (const row of gameState.board)
+    for (const cell of row) if (cell === EMPTY_CELL_VALUE) return false;
+
+  return true;
 };

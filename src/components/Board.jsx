@@ -1,6 +1,6 @@
 import React from "react";
 import "./Board.css";
-import { getIsCellEmpty, getCellDisplayValue } from "../gameFlow";
+import { getIsCellEmpty, getPlayerDisplayValue } from "../gameFlow";
 
 const Board = ({ board, onCellClick }) => {
   return (
@@ -17,7 +17,7 @@ const Board = ({ board, onCellClick }) => {
                 onCellClick({ rowIndex, cellIndex, cell });
               }}
             >
-              {getCellDisplayValue(cell)}
+              {getPlayerDisplayValue(cell)}
             </div>
           ))}
         </div>
